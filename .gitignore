@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+*.tsbuildinfo
+
+# TypeScript declaration files (generated in tests by IDE)
+tests/**/*.d.ts
+tests/**/*.d.ts.map
+
+# JavaScript files compiled from TypeScript in tests (Jest transpiles on the fly)
+tests/**/*.js
+tests/**/*.js.map
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/settings.json
+.idea
+
+# Coverage
+coverage
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db

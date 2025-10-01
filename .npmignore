@@ -1,0 +1,41 @@
+# Source files
+src/
+tests/
+examples/
+
+# Config files
+tsconfig.json
+tsconfig.build.json
+tsconfig.test.json
+jest.config.js
+.eslintrc.js
+
+# Development files
+*.log
+*.tgz
+.DS_Store
+.env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# Node modules
+node_modules/
+
+# Documentation (keep README.md)
+docs/
+IMPLEMENTATION_PLAN.md
