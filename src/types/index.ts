@@ -99,6 +99,7 @@ export interface CreateCredentialOptions {
  */
 export interface EmailMessage {
   from: string;
+  from_name?: string;
   to: string | string[];
   cc?: string | string[];
   bcc?: string | string[];
@@ -115,6 +116,8 @@ export interface EmailMessage {
 export interface TemplateMessage {
   template_guid: string;
   to: string | string[];
+  from?: string;
+  from_name?: string;
   variables?: Record<string, any>;
 }
 

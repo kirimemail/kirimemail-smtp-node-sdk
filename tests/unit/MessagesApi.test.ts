@@ -90,6 +90,39 @@ describe('MessagesApi', () => {
       expect(requests[0].options.body).toContain('"to":"recipient@example.com"');
     });
 
+    it('should send message with from_name successfully', async () => {
+      const message = {
+        from: 'sender@example.com',
+        from_name: 'Company Name',
+        to: 'recipient@example.com',
+        subject: 'Test Email',
+        text: 'This is a test email',
+      };
+
+      mockKyResponse('POST', 'api/domains/example.com/message', {
+        status: 200,
+        json: createSuccessResponse({
+          message_id: 'msg-123',
+          status: 'sent',
+        }, { message: 'Email sent successfully' }).json,
+      });
+
+      const result = await messagesApi.sendMessage('example.com', message);
+
+      expect(result.success).toBe(true);
+      expect(result.data.message_id).toBe('msg-123');
+      expect(result.data.status).toBe('sent');
+      expect(result.message).toBe('Email sent successfully');
+
+      const requests = getMockRequests();
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe('/api/domains/example.com/message');
+      expect(requests[0].options.method).toBe('POST');
+      expect(requests[0].options.body).toContain('"from":"sender@example.com"');
+      expect(requests[0].options.body).toContain('"to":"recipient@example.com"');
+      expect(requests[0].options.body).toContain('"from_name":"Company Name"');
+    });
+
     it('should handle send error', async () => {
       const message = {
         from: 'sender@example.com',
@@ -250,6 +283,43 @@ describe('MessagesApi', () => {
       expect(requests[0].options.method).toBe('POST');
       expect(requests[0].options.body).toContain('"template_guid":"welcome_template"');
       expect(requests[0].options.body).toContain('"name":"John Doe"');
+    });
+
+    it('should send template message with from_name successfully', async () => {
+      const template = {
+        from: 'sender@example.com',
+        from_name: 'Company Name',
+        to: 'recipient@example.com',
+        template_guid: 'welcome_template',
+        variables: {
+          name: 'John Doe',
+          company: 'Acme Corp',
+        },
+      };
+
+      mockKyResponse('POST', 'api/domains/example.com/message/template', {
+        status: 200,
+        json: createSuccessResponse({
+          message_id: 'template-msg-999',
+          status: 'sent',
+          template_id: 'welcome-template',
+        }, { message: 'Template email sent successfully' }).json,
+      });
+
+      const result = await messagesApi.sendTemplateMessage('example.com', template);
+
+      expect(result.success).toBe(true);
+      expect(result.data.message_id).toBe('template-msg-999');
+      expect(result.data.template_id).toBe('welcome-template');
+      expect(result.data.status).toBe('sent');
+      expect(result.message).toBe('Template email sent successfully');
+
+      const requests = getMockRequests();
+      expect(requests).toHaveLength(1);
+      expect(requests[0].url).toBe('/api/domains/example.com/message/template');
+      expect(requests[0].options.method).toBe('POST');
+      expect(requests[0].options.body).toContain('"template_guid":"welcome_template"');
+      expect(requests[0].options.body).toContain('"from_name":"Company Name"');
     });
 
     it('should handle template send error', async () => {
