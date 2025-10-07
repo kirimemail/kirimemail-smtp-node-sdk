@@ -1,6 +1,6 @@
 {
   "name": "@kirimemail/smtp-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js SDK for Kirim.Email SMTP API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
