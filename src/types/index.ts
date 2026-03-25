@@ -135,3 +135,21 @@ export interface AuthDomainSetupOptions {
 export interface TrackingDomainSetupOptions {
   tracking_domain: string;
 }
+
+export interface EmailValidationOptions {
+  email: string;
+}
+
+export interface BulkEmailValidationOptions {
+  emails: string[];
+}
+
+export interface WebhookOptions {
+  type: 'queued' | 'send' | 'delivered' | 'bounced' | 'failed' | 'permanent_fail' | 'opened' | 'clicked' | 'unsubscribed' | 'temporary_fail' | 'deferred';
+  url: string;
+}
+
+export interface WebhookUpdateOptions {
+  type?: 'queued' | 'send' | 'delivered' | 'bounced' | 'failed' | 'permanent_fail' | 'opened' | 'clicked' | 'unsubscribed' | 'temporary_fail' | 'deferred';
+  url?: string;
+}

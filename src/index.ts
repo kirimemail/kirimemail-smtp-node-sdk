@@ -5,7 +5,7 @@ export {
   AuthenticationException,
   ValidationException,
   NotFoundException,
-  ServerException,
+  ServerException
 } from './exceptions';
 
 // Models
@@ -15,6 +15,8 @@ export {
   LogEntry,
   Pagination,
   Suppression,
+  EmailValidationResult,
+  Webhook,
 } from './models';
 
 // SMTP Event Constants
@@ -36,10 +38,14 @@ export type {
   TemplateMessage,
   AuthDomainSetupOptions,
   TrackingDomainSetupOptions,
+  EmailValidationOptions,
+  BulkEmailValidationOptions,
+  WebhookOptions,
+  WebhookUpdateOptions,
 } from './types';
 
 // API classes
-export { CredentialsApi, DomainsApi, LogsApi, MessagesApi, SuppressionsApi } from './api';
+export { CredentialsApi, DomainsApi, LogsApi, MessagesApi, SuppressionsApi, EmailValidationApi, WebhooksApi } from './api';
 
 // Re-export for convenience
 export type {
@@ -48,4 +54,6 @@ export type {
   LogEntryData,
   PaginationData,
   SuppressionData,
+  EmailValidationResultData,
+  WebhookData,
 } from './models';

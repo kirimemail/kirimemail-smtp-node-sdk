@@ -168,6 +168,26 @@ Manage email suppressions:
 - `deleteBounceSuppressions(domain, ids)` - Delete bounce suppressions
 - `deleteWhitelistSuppressions(domain, ids)` - Delete whitelist suppressions
 
+#### EmailValidationApi
+
+Validate email addresses with comprehensive checks:
+
+- `validateEmail(email)` - Validate single email
+- `validateEmailStrict(email)` - Validate email with strict mode
+- `validateEmailBulk(emails)` - Validate multiple emails (max 100)
+- `validateEmailBulkStrict(emails)` - Validate multiple emails with strict mode
+
+#### WebhooksApi
+
+Manage webhook configurations for event notifications:
+
+- `listWebhooks(domain, params?)` - List all webhooks
+- `createWebhook(domain, options)` - Create new webhook
+- `getWebhook(domain, webhookGuid)` - Get specific webhook
+- `updateWebhook(domain, webhookGuid, options)` - Update webhook
+- `deleteWebhook(domain, webhookGuid)` - Delete webhook
+- `testWebhook(domain, webhookGuid)` - Test webhook URL
+
 ## Models
 
 ### Credential
@@ -205,6 +225,33 @@ Represents pagination metadata:
 - `hasPreviousPage(): boolean` - Check if previous page exists
 - `getNextPage(): number | null` - Get next page number
 - `getSummary(): string` - Get pagination summary
+
+### EmailValidationResult
+
+Represents email validation result:
+
+- `email: string` - Validated email address
+- `isValid: boolean` - Whether email passed all validation checks
+- `error: string | null` - Error message if validation failed
+- `warnings: string[]` - Array of validation warnings
+- `cached: boolean` - Whether result was served from cache
+- `validatedAt: string` - ISO timestamp of validation
+- `isSpamtrap: boolean` - Whether email is likely a spamtrap
+- `spamtrapScore: number` - Spamtrap probability score (0.0-1.0)
+
+### Webhook
+
+Represents webhook configuration:
+
+- `webhookGuid: string` - Unique webhook identifier (UUID)
+- `userGuid: string` - User GUID who owns webhook
+- `userDomainGuid: string` - Domain GUID associated with webhook
+- `userSmtpGuid: string` - SMTP configuration GUID
+- `type: 'queued' | 'send' | 'delivered' | 'bounced' | 'failed' | 'permanent_fail' | 'opened' | 'clicked' | 'unsubscribed' | 'temporary_fail' | 'deferred'` - Event type that triggers webhook
+- `url: string` - URL endpoint for webhook events
+- `isDeleted: boolean` - Whether webhook has been deleted
+- `createdAt: number` - Creation timestamp
+- `modifiedAt: number` - Last modified timestamp
 
 ## Error Handling
 
@@ -373,10 +420,69 @@ console.log(`Total suppressions: ${suppressions.data.length}`);
 const bounces = await suppressionsApi.getBounceSuppressions('example.com');
 
 // Add email to whitelist
-await suppressionsApi.createWhitelistSuppression('example.com 'important@client.com');
+await suppressionsApi.createWhitelistSuppression('example.com', 'important@client.com');
 
 // Delete suppressions by IDs
-await suppressionsApi.deleteBounceSuppressions('example.com', [1, 2, 3]);
+await suppressionsApi.deleteBounceSuppressions('example.com', [1,2,3]);
+```
+
+#### Validating Emails
+
+```javascript
+const { EmailValidationApi } = require('@kirimemail/smtp-sdk');
+
+const emailValidationApi = new EmailValidationApi(client);
+
+// Validate a single email
+const result = await emailValidationApi.validateEmail('user@example.com');
+if (result.data.isValid) {
+  console.log('Email is valid');
+  console.log('Spamtrap score:', result.data.spamtrapScore);
+} else {
+  console.log('Email is invalid:', result.data.error);
+}
+
+// Bulk validate emails
+const bulkResult = await emailValidationApi.validateEmailBulk([
+  'user1@example.com',
+  'user2@example.com',
+  'invalid-email'
+]);
+console.log('Valid:', bulkResult.data.summary.valid);
+console.log('Invalid:', bulkResult.data.summary.invalid);
+console.log('Cached:', bulkResult.data.summary.cached);
+```
+
+#### Managing Webhooks
+
+```javascript
+const { WebhooksApi } = require('@kirimemail/smtp-sdk');
+
+const webhooksApi = new WebhooksApi(client);
+
+// List all webhooks
+const webhooks = await webhooksApi.listWebhooks('example.com');
+console.log(`Found ${webhooks.data.length} webhooks`);
+
+// Create a webhook for delivery events
+const webhook = await webhooksApi.createWebhook('example.com', {
+  type: 'delivered',
+  url: 'https://your-app.com/webhooks/delivered'
+});
+console.log('Webhook created:', webhook.data.webhookGuid);
+
+// Update webhook
+await webhooksApi.updateWebhook('example.com', webhook.data.webhookGuid, {
+  url: 'https://your-app.com/webhooks/updated'
+});
+
+// Test webhook
+const test = await webhooksApi.testWebhook('example.com', webhook.data.webhookGuid);
+console.log('Webhook test result:', test.message);
+
+// Delete webhook
+await webhooksApi.deleteWebhook('example.com', webhook.data.webhookGuid);
+console.log('Webhook deleted');
 ```
 
 ## Development
