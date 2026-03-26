@@ -153,3 +153,9 @@ export interface WebhookUpdateOptions {
   type?: 'queued' | 'send' | 'delivered' | 'bounced' | 'failed' | 'permanent_fail' | 'opened' | 'clicked' | 'unsubscribed' | 'temporary_fail' | 'deferred';
   url?: string;
 }
+
+export interface QuotaResult {
+  current_quota: number;
+  max_quota: number;
+  usage_percentage: number;
+}

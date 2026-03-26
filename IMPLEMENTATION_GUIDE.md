@@ -4,6 +4,24 @@
 
 This document provides a comprehensive guide for implementing and maintaining the Node.js SDK for the Kirim.Email SMTP API. The SDK uses only Basic Authentication and implements all endpoints from the OpenAPI specification that use `basicAuth`.
 
+## Current Implementation Status
+
+**Overall Progress**: 37/37 endpoints implemented (100%) ✅
+
+| API | Endpoints | Implemented | Status |
+|-----|-----------|-------------|--------|
+| Credentials API | 5 | 5 | ✅ 100% |
+| Domains API | 8 | 8 | ✅ 100% |
+| Logs API | 3 | 3 | ✅ 100% |
+| Messages API | 2 | 2 | ✅ 100% |
+| Suppressions API | 8 | 8 | ✅ 100% |
+| Email Validation API | 4 | 4 | ✅ 100% |
+| Webhooks API | 6 | 6 | ✅ 100% |
+| User/Quota API | 1 | 1 | ✅ 100% |
+
+**Models Implemented**: 8/8 (100%) ✅
+**Type Definitions**: Complete (100%) ✅
+
 ## Package Information
 
 - **Name**: `@kirimemail/smtp-sdk`
@@ -49,6 +67,7 @@ const client = new SmtpClient('username', 'token');
 │   │   ├── SuppressionsApi.ts
 │   │   ├── EmailValidationApi.ts
 │   │   ├── WebhooksApi.ts
+│   │   ├── UserApi.ts
 │   │   └── index.ts
 │   ├── models/
 │   │   ├── Credential.ts
@@ -58,6 +77,7 @@ const client = new SmtpClient('username', 'token');
 │   │   ├── Suppression.ts
 │   │   ├── EmailValidationResult.ts
 │   │   ├── Webhook.ts
+│   │   ├── Quota.ts
 │   │   └── index.ts
 │   ├── types/
 │   │   └── index.ts
@@ -153,7 +173,7 @@ const client = new SmtpClient('username', 'token');
 
 **Implementation**: ✅ Completed in `SuppressionsApi.ts`
 
-### 6. Email Validation API (NEW)
+### 6. Email Validation API
 
 **Base Path**: `/api/email/validate`
 
@@ -164,9 +184,9 @@ const client = new SmtpClient('username', 'token');
 | POST | `/api/email/validate/bulk` | Validate multiple emails (max 100) |
 | POST | `/api/email/validate/bulk/strict` | Validate multiple emails with strict mode |
 
-**Implementation**: ⚠️ Need to create `EmailValidationApi.ts`
+**Implementation**: ✅ Completed in `EmailValidationApi.ts`
 
-### 7. Webhooks API (NEW)
+### 7. Webhooks API
 
 **Base Path**: `/api/domains/{domain}/webhooks`
 
@@ -179,7 +199,17 @@ const client = new SmtpClient('username', 'token');
 | DELETE | `/api/domains/{domain}/webhooks/{webhookGuid}` | Delete webhook |
 | POST | `/api/domains/{domain}/webhooks/test` | Test webhook URL |
 
-**Implementation**: ⚠️ Need to create `WebhooksApi.ts`
+**Implementation**: ✅ Completed in `WebhooksApi.ts`
+
+### 8. User/Quota API
+
+**Base Path**: `/api/quota`
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/api/quota` | Get user quota information |
+
+**Implementation**: ✅ Completed in `UserApi.ts`
 
 ## Technical Specifications
 
@@ -301,6 +331,11 @@ Custom exception classes for different error types:
 - `is_deleted`: boolean
 - `created_at`: number
 - `modified_at`: number
+
+### Quota
+- `current_quota`: number (current available quota)
+- `max_quota`: number (maximum allowed quota)
+- `usage_percentage`: number (percentage of quota used)
 
 ### Pagination
 - `total`: number
@@ -429,6 +464,15 @@ interface WebhookUpdateOptions {
 }
 ```
 
+### QuotaResult
+```typescript
+interface QuotaResult {
+  current_quota: number;
+  max_quota: number;
+  usage_percentage: number;
+}
+```
+
 ## Usage Examples
 
 ### Initialization
@@ -495,6 +539,14 @@ const result = await webhooks.createWebhook('example.com', {
 });
 ```
 
+### Get User Quota
+
+```typescript
+const result = await userApi.getQuota();
+console.log(`Current quota: ${result.data.current_quota}/${result.data.max_quota}`);
+console.log(`Usage: ${result.data.usage_percentage}%`);
+```
+
 ## Build & Publish
 
 ### Build
@@ -528,44 +580,47 @@ npm version major  # 1.0.1 -> 2.0.0
 
 | API | Status | Notes |
 |-----|--------|-------|
-| CredentialsApi | ✅ Complete | All endpoints implemented |
-| DomainsApi | ✅ Complete | All endpoints implemented |
-| LogsApi | ✅ Complete | All endpoints implemented |
-| MessagesApi | ✅ Complete | All endpoints implemented |
-| SuppressionsApi | ✅ Complete | All endpoints implemented |
-| EmailValidationApi | ⚠️ Missing | Need to implement |
-| WebhooksApi | ⚠️ Missing | Need to implement |
-| Models | ⚠️ Partial | EmailValidationResult & Webhook missing |
-| Types | ⚠️ Partial | Email validation & webhook types missing |
+| CredentialsApi | ✅ Complete | All 5 endpoints implemented |
+| DomainsApi | ✅ Complete | All 8 endpoints implemented |
+| LogsApi | ✅ Complete | All 3 endpoints implemented |
+| MessagesApi | ✅ Complete | All 2 endpoints implemented |
+| SuppressionsApi | ✅ Complete | All 8 endpoints implemented |
+| EmailValidationApi | ✅ Complete | All 4 endpoints implemented |
+| WebhooksApi | ✅ Complete | All 6 endpoints implemented |
+| User/QuotaApi | ✅ Complete | All 1 endpoint implemented |
+| Models | ✅ Complete | All 8 models implemented |
+| Types | ✅ Complete | All type definitions implemented |
 | Documentation | ✅ Complete | README and API docs done |
 | Tests | ✅ Basic | Model tests done, API tests partial |
 
 ## Next Steps
 
 1. ✅ Create integrated documentation (this file)
-2. ⚠️ Implement EmailValidationApi with all validation endpoints
-3. ⚠️ Implement WebhooksApi with all webhook endpoints
-4. ⚠️ Add EmailValidationResult model
-5. ⚠️ Add Webhook model
-6. ⚠️ Add email validation and webhook type definitions
-7. ⚠️ Update main index.ts to export new APIs and models
-8. ⚠️ Add unit tests for new APIs
-9. ⏳ Publish to npm
-10. ⏳ Create GitHub release
+2. ✅ Implement EmailValidationApi with all validation endpoints
+3. ✅ Implement WebhooksApi with all webhook endpoints
+4. ✅ Add EmailValidationResult model
+5. ✅ Add Webhook model
+6. ✅ Add email validation and webhook type definitions
+7. ✅ Update main index.ts to export new APIs and models
+8. ✅ Implement UserApi with quota endpoint
+9. ✅ Add Quota model
+10. ✅ Add QuotaResult type definition
+11. ⚠️ Add unit tests for EmailValidationApi and WebhooksApi
+12. ⚠️ Add unit tests for UserApi
+13. ⏳ Publish to npm
+14. ⏳ Create GitHub release
 
 ## Success Criteria
 
-- [x] All Basic Auth endpoints from OpenAPI spec implemented
-- [x] Full TypeScript support with comprehensive types
-- [x] Comprehensive error handling
-- [x] Modern JavaScript patterns (async/await, etc.)
-- [x] Well-documented API with examples
-- [x] Simplified authentication using only Basic Auth
-- [x] All existing API classes (Credentials, Domains, Logs, Messages, Suppressions) complete
-- [ ] Email Validation API implemented
-- [ ] Webhooks API implemented
-- [ ] All models complete
-- [ ] All type definitions complete
-- [ ] Complete API coverage matching OpenAPI spec
+- [x] All Basic Auth endpoints from OpenAPI spec implemented (37/37) ✅
+- [x] Full TypeScript support with comprehensive types ✅
+- [x] Comprehensive error handling ✅
+- [x] Modern JavaScript patterns (async/await, etc.) ✅
+- [x] Well-documented API with examples ✅
+- [x] Simplified authentication using only Basic Auth ✅
+- [x] All API classes complete (Credentials, Domains, Logs, Messages, Suppressions, EmailValidation, Webhooks, User) ✅
+- [x] All models complete (8/8) ✅
+- [x] All type definitions complete ✅
+- [x] Complete API coverage matching OpenAPI spec (37/37 endpoints) ✅
 - [ ] Unit testing framework with full API coverage
 - [ ] Ready for npm publication

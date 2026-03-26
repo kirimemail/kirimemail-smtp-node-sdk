@@ -17,6 +17,7 @@ export {
   Suppression,
   EmailValidationResult,
   Webhook,
+  Quota,
 } from './models';
 
 // SMTP Event Constants
@@ -42,10 +43,11 @@ export type {
   BulkEmailValidationOptions,
   WebhookOptions,
   WebhookUpdateOptions,
+  QuotaResult,
 } from './types';
 
 // API classes
-export { CredentialsApi, DomainsApi, LogsApi, MessagesApi, SuppressionsApi, EmailValidationApi, WebhooksApi } from './api';
+export { CredentialsApi, DomainsApi, LogsApi, MessagesApi, SuppressionsApi, EmailValidationApi, WebhooksApi, UserApi } from './api';
 
 // Re-export for convenience
 export type {
@@ -56,4 +58,5 @@ export type {
   SuppressionData,
   EmailValidationResultData,
   WebhookData,
+  QuotaData,
 } from './models';
