@@ -155,6 +155,15 @@ Retrieve email logs and activity:
 - `getLogsByMessage(domain, messageGuid)` - Get logs for specific message
 - `streamLogs(domain, params?)` - Stream logs in real-time
 
+**LogFilterOptions:**
+- `start` - Start date (string or Date)
+- `end` - End date (string or Date)
+- `sender` - Filter by sender email
+- `recipient` - Filter by recipient email
+- `event_type` - Filter by event type (queued, send, delivered, bounced, failed, opened, clicked, unsubscribed, temporary_fail, permanent_fail, deferred)
+- `tags` - Filter by tags (partial match)
+- `limit`, `page`, `offset` - Pagination options
+
 #### SuppressionsApi
 
 Manage email suppressions:

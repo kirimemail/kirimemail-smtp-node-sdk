@@ -68,6 +68,8 @@ export interface LogFilterOptions {
   limit?: number;
   page?: number;
   offset?: number;
+  event_type?: string;
+  tags?: string;
 }
 
 /**

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-29
+
+### Added
+- **LogsApi**: Added `event_type` and `tags` filter options to `LogFilterOptions` for enhanced log filtering
+- **GitHub Actions**: Added publish workflow for npm publishing on version tags
+
+### Changed
+- Updated `LogFilterOptions` interface to support event type and tags filtering
+
 ## [1.0.1] - 2026-03-25
 
 ### Added
