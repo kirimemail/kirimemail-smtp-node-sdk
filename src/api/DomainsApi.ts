@@ -121,16 +121,13 @@ export class DomainsApi {
    * Delete a domain
    *
    * @param domain Domain name
-   * @returns Promise resolving to deletion response
+   * @returns Promise resolving when domain is deleted
    * @throws ApiException
    */
-  public async deleteDomain(domain: string): Promise<{
-    success: boolean;
-    message?: string;
-  }> {
+  public async deleteDomain(domain: string): Promise<void> {
     try {
-      const response = await this.client.delete(`api/domains/${domain}`);
-      return response;
+      await this.client.delete(`api/domains/${domain}`);
+      return;
     } catch (error) {
       throw this.handleError(error, 'Failed to delete domain');
     }
@@ -257,6 +254,38 @@ export class DomainsApi {
       return response;
     } catch (error) {
       throw this.handleError(error, 'Failed to verify tracking domain records');
+    }
+  }
+
+  /**
+   * Delete authentication domain for a domain
+   *
+   * @param domain Domain name
+   * @returns Promise resolving when auth domain is deleted
+   * @throws ApiException
+   */
+  public async deleteAuthDomain(domain: string): Promise<void> {
+    try {
+      await this.client.delete(`api/domains/${domain}/auth-domain`);
+      return;
+    } catch (error) {
+      throw this.handleError(error, 'Failed to delete authentication domain');
+    }
+  }
+
+  /**
+   * Delete tracking domain for a domain
+   *
+   * @param domain Domain name
+   * @returns Promise resolving when tracking domain is deleted
+   * @throws ApiException
+   */
+  public async deleteTrackingDomain(domain: string): Promise<void> {
+    try {
+      await this.client.delete(`api/domains/${domain}/tracklink`);
+      return;
+    } catch (error) {
+      throw this.handleError(error, 'Failed to delete tracking domain');
     }
   }
 

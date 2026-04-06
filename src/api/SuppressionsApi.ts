@@ -211,22 +211,18 @@ export class SuppressionsApi {
    *
    * @param domain Domain name
    * @param ids Array of suppression IDs to delete
-   * @returns Promise resolving to deletion response
+   * @returns Promise resolving when suppressions are deleted
    * @throws ApiException
    */
   public async deleteUnsubscribeSuppressions(
     domain: string,
     ids: number[]
-  ): Promise<{
-    success: boolean;
-    message?: string;
-    deleted_count?: number;
-  }> {
+  ): Promise<void> {
     try {
-      const response = await this.client.delete(`api/domains/${domain}/suppressions/unsubscribes`, {
+      await this.client.delete(`api/domains/${domain}/suppressions/unsubscribes`, {
         ids,
       });
-      return response;
+      return;
     } catch (error) {
       throw this.handleError(error, 'Failed to delete unsubscribe suppressions');
     }
@@ -237,22 +233,18 @@ export class SuppressionsApi {
    *
    * @param domain Domain name
    * @param ids Array of suppression IDs to delete
-   * @returns Promise resolving to deletion response
+   * @returns Promise resolving when suppressions are deleted
    * @throws ApiException
    */
   public async deleteBounceSuppressions(
     domain: string,
     ids: number[]
-  ): Promise<{
-    success: boolean;
-    message?: string;
-    deleted_count?: number;
-  }> {
+  ): Promise<void> {
     try {
-      const response = await this.client.delete(`api/domains/${domain}/suppressions/bounces`, {
+      await this.client.delete(`api/domains/${domain}/suppressions/bounces`, {
         ids,
       });
-      return response;
+      return;
     } catch (error) {
       throw this.handleError(error, 'Failed to delete bounce suppressions');
     }
@@ -263,22 +255,18 @@ export class SuppressionsApi {
    *
    * @param domain Domain name
    * @param ids Array of suppression IDs to delete
-   * @returns Promise resolving to deletion response
+   * @returns Promise resolving when suppressions are deleted
    * @throws ApiException
    */
   public async deleteWhitelistSuppressions(
     domain: string,
     ids: number[]
-  ): Promise<{
-    success: boolean;
-    message?: string;
-    deleted_count?: number;
-  }> {
+  ): Promise<void> {
     try {
-      const response = await this.client.delete(`api/domains/${domain}/suppressions/whitelist`, {
+      await this.client.delete(`api/domains/${domain}/suppressions/whitelist`, {
         ids,
       });
-      return response;
+      return;
     } catch (error) {
       throw this.handleError(error, 'Failed to delete whitelist suppressions');
     }

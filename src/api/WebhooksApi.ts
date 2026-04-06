@@ -107,13 +107,10 @@ export class WebhooksApi {
   public async deleteWebhook(
     domain: string,
     webhookGuid: string
-  ): Promise<{
-    success: boolean;
-    message?: string;
-  }> {
+  ): Promise<void> {
     try {
-      const response = await this.client.delete(`api/domains/${domain}/webhooks/${webhookGuid}`);
-      return response;
+      await this.client.delete(`api/domains/${domain}/webhooks/${webhookGuid}`);
+      return;
     } catch (error) {
       throw this.handleError(error, 'Failed to delete webhook');
     }

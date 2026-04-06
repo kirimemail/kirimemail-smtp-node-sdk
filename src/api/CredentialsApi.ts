@@ -133,19 +133,16 @@ export class CredentialsApi {
    *
    * @param domain Domain name
    * @param credentialId Credential ID or GUID
-   * @returns Promise resolving to deletion response
+   * @returns Promise resolving when credential is deleted
    * @throws ApiException
    */
   public async deleteCredential(
     domain: string,
     credentialId: string
-  ): Promise<{
-    success: boolean;
-    message?: string;
-  }> {
+  ): Promise<void> {
     try {
-      const response = await this.client.delete(`api/domains/${domain}/credentials/${credentialId}`);
-      return response;
+      await this.client.delete(`api/domains/${domain}/credentials/${credentialId}`);
+      return;
     } catch (error) {
       throw this.handleError(error, 'Failed to delete credential');
     }

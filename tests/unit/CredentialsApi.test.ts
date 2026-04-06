@@ -253,14 +253,12 @@ describe('CredentialsApi', () => {
   describe('deleteCredential', () => {
     it('should delete credential successfully', async () => {
       mockKyResponse('DELETE', 'api/domains/example.com/credentials/1', {
-        status: 200,
-        json: createSuccessResponse({}, { message: 'Credential deleted successfully' }).json,
+        status: 204,
       });
 
       const result = await credentialsApi.deleteCredential('example.com', '1');
 
-      expect(result.success).toBe(true);
-      expect(result.message).toBe('Credential deleted successfully');
+      expect(result).toBeUndefined();
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);

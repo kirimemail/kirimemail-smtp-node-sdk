@@ -265,6 +265,11 @@ export class SmtpClient {
         method,
       });
 
+      // Handle 204 No Content responses
+      if (response.status === 204) {
+        return { success: true } as ApiResponse<T>;
+      }
+
       const data = await response.json() as ApiResponse<T>;
 
       // Handle success responses

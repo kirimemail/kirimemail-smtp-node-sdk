@@ -255,14 +255,12 @@ describe('DomainsApi', () => {
   describe('deleteDomain', () => {
     it('should delete domain successfully', async () => {
       mockKyResponse('DELETE', 'api/domains/example.com', {
-        status: 200,
-        ...createSuccessResponse({}, { message: 'Domain deleted successfully' }),
+        status: 204,
       });
 
       const result = await domainsApi.deleteDomain('example.com');
 
-      expect(result.success).toBe(true);
-      expect(result.message).toBe('Domain deleted successfully');
+      expect(result).toBeUndefined();
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);

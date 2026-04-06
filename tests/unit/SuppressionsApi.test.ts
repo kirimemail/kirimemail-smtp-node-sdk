@@ -365,18 +365,12 @@ describe('SuppressionsApi', () => {
   describe('deleteUnsubscribeSuppressions', () => {
     it('should delete unsubscribe suppressions successfully', async () => {
       mockKyResponse('DELETE', 'api/domains/example.com/suppressions/unsubscribes', {
-        status: 200,
-        ...createSuccessResponse({}, {
-          message: 'Unsubscribe suppressions deleted successfully',
-          deleted_count: 2
-        }),
+        status: 204,
       });
 
       const result = await suppressionsApi.deleteUnsubscribeSuppressions('example.com', [1, 3]);
 
-      expect(result.success).toBe(true);
-      expect(result.message).toBe('Unsubscribe suppressions deleted successfully');
-      expect(result.deleted_count).toBe(2);
+      expect(result).toBeUndefined();
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);
@@ -399,18 +393,12 @@ describe('SuppressionsApi', () => {
   describe('deleteBounceSuppressions', () => {
     it('should delete bounce suppressions successfully', async () => {
       mockKyResponse('DELETE', 'api/domains/example.com/suppressions/bounces', {
-        status: 200,
-        ...createSuccessResponse({}, {
-          message: 'Bounce suppressions deleted successfully',
-          deleted_count: 1
-        }),
+        status: 204,
       });
 
       const result = await suppressionsApi.deleteBounceSuppressions('example.com', [2]);
 
-      expect(result.success).toBe(true);
-      expect(result.message).toBe('Bounce suppressions deleted successfully');
-      expect(result.deleted_count).toBe(1);
+      expect(result).toBeUndefined();
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);
@@ -423,18 +411,12 @@ describe('SuppressionsApi', () => {
   describe('deleteWhitelistSuppressions', () => {
     it('should delete whitelist suppressions successfully', async () => {
       mockKyResponse('DELETE', 'api/domains/example.com/suppressions/whitelist', {
-        status: 200,
-        ...createSuccessResponse({}, {
-          message: 'Whitelist suppressions deleted successfully',
-          deleted_count: 1
-        }),
+        status: 204,
       });
 
       const result = await suppressionsApi.deleteWhitelistSuppressions('example.com', [5]);
 
-      expect(result.success).toBe(true);
-      expect(result.message).toBe('Whitelist suppressions deleted successfully');
-      expect(result.deleted_count).toBe(1);
+      expect(result).toBeUndefined();
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);
