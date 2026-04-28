@@ -178,7 +178,7 @@ describe('SuppressionsApi', () => {
         last_page: 1,
       };
 
-      mockKyResponse('GET', 'api/domains/example.com/suppressions/unsubscribes', {
+      mockKyResponse('GET', 'api/domains/example.com/suppressions', {
         status: 200,
         ...createPaginatedResponse(mockData, mockPagination),
       });
@@ -195,12 +195,12 @@ describe('SuppressionsApi', () => {
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);
-      expect(requests[0].url).toBe('api/domains/example.com/suppressions/unsubscribes');
+      expect(requests[0].url).toBe('api/domains/example.com/suppressions');
       expect(requests[0].options.method).toBe('GET');
     });
 
     it('should handle empty unsubscribe suppressions', async () => {
-      mockKyResponse('GET', 'api/domains/example.com/suppressions/unsubscribes', {
+      mockKyResponse('GET', 'api/domains/example.com/suppressions', {
         status: 200,
         ...createPaginatedResponse([], {
           total: 0,
@@ -242,7 +242,7 @@ describe('SuppressionsApi', () => {
         last_page: 1,
       };
 
-      mockKyResponse('GET', 'api/domains/example.com/suppressions/bounces', {
+      mockKyResponse('GET', 'api/domains/example.com/suppressions', {
         status: 200,
         ...createPaginatedResponse(mockData, mockPagination),
       });
@@ -258,7 +258,7 @@ describe('SuppressionsApi', () => {
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);
-      expect(requests[0].url).toBe('api/domains/example.com/suppressions/bounces');
+      expect(requests[0].url).toBe('api/domains/example.com/suppressions');
       expect(requests[0].options.method).toBe('GET');
     });
   });
@@ -289,7 +289,7 @@ describe('SuppressionsApi', () => {
         last_page: 1,
       };
 
-      mockKyResponse('GET', 'api/domains/example.com/suppressions/whitelist', {
+      mockKyResponse('GET', 'api/domains/example.com/suppressions', {
         status: 200,
         ...createPaginatedResponse(mockData, mockPagination),
       });
@@ -306,7 +306,7 @@ describe('SuppressionsApi', () => {
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);
-      expect(requests[0].url).toBe('api/domains/example.com/suppressions/whitelist');
+      expect(requests[0].url).toBe('api/domains/example.com/suppressions');
       expect(requests[0].options.method).toBe('GET');
     });
   });

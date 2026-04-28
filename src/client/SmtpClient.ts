@@ -119,14 +119,14 @@ export class SmtpClient {
       }
     }
 
-    // Add files
+    // Add files with "attachments" naming to match API expectations
     if (files) {
       for (const file of files) {
         const blob = typeof file.content === 'string'
           ? new Blob([file.content], { type: file.contentType || 'text/plain' })
           : new Blob([file.content], { type: file.contentType || 'application/octet-stream' });
 
-        formData.append(file.field, blob, file.filename);
+        formData.append('attachments', blob, file.filename);
       }
     }
 

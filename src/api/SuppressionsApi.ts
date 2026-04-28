@@ -34,6 +34,7 @@ export class SuppressionsApi {
   ): Promise<{
     data: Suppression[];
     pagination?: Pagination;
+    filters?: Record<string, any>;
   }> {
     try {
       const response = await this.client.get(`api/domains/${domain}/suppressions`, params);
@@ -49,10 +50,137 @@ export class SuppressionsApi {
       return {
         data: suppressionModels,
         pagination,
+        filters: (response as any).filters,
       };
     } catch (error) {
       throw this.handleError(error, 'Failed to get suppressions');
     }
+  }
+
+  /**
+   * Search suppressions by recipient email or domain
+   *
+   * @param domain Domain name
+   * @param search Search term (email or domain)
+   * @param additionalParams Additional query parameters
+   * @returns Promise resolving to suppressions list with pagination
+   * @throws ApiException
+   */
+  public async searchSuppressions(
+    domain: string,
+    search: string,
+    additionalParams: {
+      limit?: number;
+      page?: number;
+      offset?: number;
+      type?: string;
+    } = {}
+  ): Promise<{
+    data: Suppression[];
+    pagination?: Pagination;
+    filters?: Record<string, any>;
+  }> {
+    return this.getSuppressions(domain, {
+      ...additionalParams,
+      search,
+    });
+  }
+
+  /**
+   * Get suppressions with pagination
+   *
+   * @param domain Domain name
+   * @param page Page number (default: 1)
+   * @param perPage Items per page (default: 10)
+   * @param additionalParams Additional query parameters
+   * @returns Promise resolving to suppressions list with pagination
+   * @throws ApiException
+   */
+  public async getSuppressionsPaginated(
+    domain: string,
+    page: number = 1,
+    perPage: number = 10,
+    additionalParams: {
+      offset?: number;
+      type?: string;
+      search?: string;
+    } = {}
+  ): Promise<{
+    data: Suppression[];
+    pagination?: Pagination;
+    filters?: Record<string, any>;
+  }> {
+    return this.getSuppressions(domain, {
+      ...additionalParams,
+      page,
+      limit: perPage,
+    });
+  }
+
+  /**
+   * Get suppressions created after a specific date
+   *
+   * @param domain Domain name
+   * @param startDate Start date
+   * @param additionalParams Additional query parameters
+   * @returns Promise resolving to suppressions list with pagination
+   * @throws ApiException
+   */
+  public async getSuppressionsCreatedAfter(
+    domain: string,
+    startDate: Date,
+    additionalParams: {
+      limit?: number;
+      page?: number;
+      offset?: number;
+      type?: string;
+      search?: string;
+    } = {}
+  ): Promise<{
+    data: Suppression[];
+    pagination?: Pagination;
+    filters?: Record<string, any>;
+  }> {
+    const allSuppressions = await this.getSuppressions(domain, additionalParams);
+
+    const filteredSuppressions = allSuppressions.data.filter((suppression) => {
+      if (suppression.createdAt) {
+        const createdDate = suppression.getCreatedDate();
+        return createdDate !== null && createdDate >= startDate;
+      }
+      return true;
+    });
+
+    return {
+      ...allSuppressions,
+      data: filteredSuppressions,
+    };
+  }
+
+  /**
+   * Get suppressions by type
+   *
+   * @param domain Domain name
+   * @param type Suppression type (unsubscribe, bounce, whitelist)
+   * @param params Query parameters (limit, page, offset, search)
+   * @returns Promise resolving to suppressions list with pagination
+   * @throws ApiException
+   */
+  public async getSuppressionsByType(
+    domain: string,
+    type: 'unsubscribe' | 'bounce' | 'whitelist',
+    params: {
+      limit?: number;
+      page?: number;
+      offset?: number;
+      search?: string;
+    } = {}
+  ): Promise<{
+    data: Suppression[];
+    pagination?: Pagination;
+    filters?: Record<string, any>;
+  }> {
+    return this.getSuppressions(domain, { ...params, type });
   }
 
   /**
@@ -74,25 +202,9 @@ export class SuppressionsApi {
   ): Promise<{
     data: Suppression[];
     pagination?: Pagination;
+    filters?: Record<string, any>;
   }> {
-    try {
-      const response = await this.client.get(`api/domains/${domain}/suppressions/unsubscribes`, params);
-
-      const suppressions = response.data?.data || [];
-      const suppressionModels = suppressions.map((suppressionData: any) =>
-        Suppression.fromAPI(suppressionData)
-      );
-
-      const pagination = response.pagination ?
-        new Pagination(response.pagination) : new Pagination({});
-
-      return {
-        data: suppressionModels,
-        pagination,
-      };
-    } catch (error) {
-      throw this.handleError(error, 'Failed to get unsubscribe suppressions');
-    }
+    return this.getSuppressionsByType(domain, 'unsubscribe', params);
   }
 
   /**
@@ -114,25 +226,9 @@ export class SuppressionsApi {
   ): Promise<{
     data: Suppression[];
     pagination?: Pagination;
+    filters?: Record<string, any>;
   }> {
-    try {
-      const response = await this.client.get(`api/domains/${domain}/suppressions/bounces`, params);
-
-      const suppressions = response.data?.data || [];
-      const suppressionModels = suppressions.map((suppressionData: any) =>
-        Suppression.fromAPI(suppressionData)
-      );
-
-      const pagination = response.pagination ?
-        new Pagination(response.pagination) : new Pagination({});
-
-      return {
-        data: suppressionModels,
-        pagination,
-      };
-    } catch (error) {
-      throw this.handleError(error, 'Failed to get bounce suppressions');
-    }
+    return this.getSuppressionsByType(domain, 'bounce', params);
   }
 
   /**
@@ -154,25 +250,9 @@ export class SuppressionsApi {
   ): Promise<{
     data: Suppression[];
     pagination?: Pagination;
+    filters?: Record<string, any>;
   }> {
-    try {
-      const response = await this.client.get(`api/domains/${domain}/suppressions/whitelist`, params);
-
-      const suppressions = response.data?.data || [];
-      const suppressionModels = suppressions.map((suppressionData: any) =>
-        Suppression.fromAPI(suppressionData)
-      );
-
-      const pagination = response.pagination ?
-        new Pagination(response.pagination) : new Pagination({});
-
-      return {
-        data: suppressionModels,
-        pagination,
-      };
-    } catch (error) {
-      throw this.handleError(error, 'Failed to get whitelist suppressions');
-    }
+    return this.getSuppressionsByType(domain, 'whitelist', params);
   }
 
   /**
