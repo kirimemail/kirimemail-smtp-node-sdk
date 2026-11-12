@@ -1,5 +1,5 @@
 import { SmtpClient } from '../client/SmtpClient';
-import { ApiResponse, RequestOptions, EmailMessage, TemplateMessage, FileUpload } from '../types';
+import { ApiResponse, RequestOptions, EmailMessage, TemplateMessage, FileUpload, SendMessageResponse, SendTemplateMessageResponse } from '../types';
 import { ApiException } from '../exceptions';
 
 /**
@@ -23,11 +23,7 @@ export class MessagesApi {
 public async sendMessage(
   domain: string,
   message: EmailMessage
-): Promise<{
-  success: boolean;
-  message?: string;
-  data?: any;
-}> {
+): Promise<SendMessageResponse> {
   try {
     const response = await this.client.post(`/api/domains/${domain}/message`, message);
     return response;
@@ -49,11 +45,7 @@ public async sendMessageWithAttachments(
   domain: string,
   message: EmailMessage,
   files: FileUpload[]
-): Promise<{
-  success: boolean;
-  message?: string;
-  data?: any;
-}> {
+): Promise<SendMessageResponse> {
   try {
     const response = await this.client.postMultipart(`/api/domains/${domain}/message`, message, files);
     return response;
@@ -73,11 +65,7 @@ public async sendMessageWithAttachments(
 public async sendBulkMessage(
   domain: string,
   message: EmailMessage
-): Promise<{
-  success: boolean;
-  message?: string;
-  data?: any;
-}> {
+): Promise<SendMessageResponse> {
   try {
     const response = await this.client.post(`/api/domains/${domain}/message`, message);
     return response;
@@ -97,11 +85,7 @@ public async sendBulkMessage(
 public async sendTemplateMessage(
   domain: string,
   template: TemplateMessage
-): Promise<{
-  success: boolean;
-  message?: string;
-  data?: any;
-}> {
+): Promise<SendTemplateMessageResponse> {
   try {
     const response = await this.client.post(`/api/domains/${domain}/message/template`, template);
     return response;
