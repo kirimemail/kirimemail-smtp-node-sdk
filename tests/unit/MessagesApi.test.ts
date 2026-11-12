@@ -68,11 +68,16 @@ describe('MessagesApi', () => {
       };
 
       mockKyResponse('POST', 'api/domains/example.com/message', {
-        status: 200,
-        json: createSuccessResponse({
-          message_id: 'msg-123',
-          status: 'sent',
-        }, { message: 'Email sent successfully' }).json,
+        status: 202,
+        json: {
+          ...createSuccessResponse({
+            message_id: 'msg-123',
+            status: 'sent',
+          }, { message: 'Email send jobs dispatched for 1 recipient(s)' }).json,
+          messages: [
+            { to: 'recipient@example.com', message_guid: '0193f3c4-aaaa-bbbb-cccc-000000000001' },
+          ],
+        },
       });
 
       const result = await messagesApi.sendMessage('example.com', message);
@@ -80,7 +85,10 @@ describe('MessagesApi', () => {
       expect(result.success).toBe(true);
       expect(result.data.message_id).toBe('msg-123');
       expect(result.data.status).toBe('sent');
-      expect(result.message).toBe('Email sent successfully');
+      expect(result.message).toBe('Email send jobs dispatched for 1 recipient(s)');
+      expect(result.messages).toHaveLength(1);
+      expect(result.messages![0].to).toBe('recipient@example.com');
+      expect(result.messages![0].message_guid).toBe('0193f3c4-aaaa-bbbb-cccc-000000000001');
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);
@@ -261,12 +269,17 @@ describe('MessagesApi', () => {
       };
 
       mockKyResponse('POST', 'api/domains/example.com/message/template', {
-        status: 200,
-        json: createSuccessResponse({
-          message_id: 'template-msg-999',
-          status: 'sent',
-          template_id: 'welcome-template',
-        }, { message: 'Template email sent successfully' }).json,
+        status: 202,
+        json: {
+          ...createSuccessResponse({
+            message_id: 'template-msg-999',
+            status: 'sent',
+            template_id: 'welcome-template',
+          }, { message: 'Template-based email jobs dispatched for 1 recipient(s)' }).json,
+          messages: [
+            { to: 'recipient@example.com', message_guid: '0193f3c4-aaaa-bbbb-cccc-000000000002' },
+          ],
+        },
       });
 
       const result = await messagesApi.sendTemplateMessage('example.com', template);
@@ -275,7 +288,10 @@ describe('MessagesApi', () => {
       expect(result.data.message_id).toBe('template-msg-999');
       expect(result.data.template_id).toBe('welcome-template');
       expect(result.data.status).toBe('sent');
-      expect(result.message).toBe('Template email sent successfully');
+      expect(result.message).toBe('Template-based email jobs dispatched for 1 recipient(s)');
+      expect(result.messages).toHaveLength(1);
+      expect(result.messages![0].to).toBe('recipient@example.com');
+      expect(result.messages![0].message_guid).toBe('0193f3c4-aaaa-bbbb-cccc-000000000002');
 
       const requests = getMockRequests();
       expect(requests).toHaveLength(1);

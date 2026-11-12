@@ -124,6 +124,38 @@ export interface TemplateMessage {
 }
 
 /**
+ * Per-recipient delivery identifier returned when an email is accepted
+ * for sending. The same GUID is also sent as the X-Message-Guid header
+ * on each email for delivery tracking and log correlation.
+ */
+export interface MessageRecipient {
+  to: string;
+  message_guid: string;
+}
+
+/**
+ * Response for sending a transactional email
+ */
+export interface SendMessageResponse {
+  success: boolean;
+  message?: string;
+  messages?: MessageRecipient[];
+  data?: any;
+}
+
+/**
+ * Response for sending a template-based email
+ */
+export interface SendTemplateMessageResponse {
+  success: boolean;
+  message?: string;
+  template_guid?: string;
+  template_name?: string;
+  messages?: MessageRecipient[];
+  data?: any;
+}
+
+/**
  * Authentication domain setup options
  */
 export interface AuthDomainSetupOptions {
